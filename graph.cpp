@@ -27,45 +27,51 @@ class Graph{
 	private:	
 		int numberOfNodes;  // Number of nodes in the graph
 
+		// Sets the number of the nodes
+		void setNumberOfNodes(int value){
+			this->numberOfNodes = value;
+		}
+
 	public:
 	
-		adjacentVertice **head; //Adjacency list as array of pointers
+		adjacentVertice **head; // Adjacency list as array of pointers
 		
 		// Constructor
-		Graph(graphEdge edges[], int n, int N)  {
+		Graph(graphEdge edges[], int numberOfEdges, int numberOfNodes)  {
 			
-			// allocate new node
-			head = new adjacentVertice*[N]();
-			this->numberOfNodes = N;
+			// Allocate new node
+			head = new adjacentVertice*[numberOfNodes]();
+			setNumberOfNodes(numberOfNodes);
 			
-			// initialize head pointer for all vertices
-			for (int i = 0; i < N; ++i)
+			// Initialize head pointer for all vertices
+			for (int i = 0; i < numberOfNodes; ++i)
 				head[i] = nullptr;
 			
-			// construct directed graph by adding edges to it
-			for (unsigned i = 0; i < n; i++)  {
-				int start_ver = edges[i].start_ver;
-				int end_ver = edges[i].end_ver;
+			// Construct directed graph by adding edges to it
+			for (unsigned i = 0; i < numberOfEdges; i++)  {
+				int startVertice = edges[i].startVertice;
+				int endVertice = edges[i].endVertice;
 				int weight = edges[i].weight;
-				// insert in the beginning
-				adjacentVertice* newNode = getAdjListNode(end_ver, weight, head[start_ver]);
+				
+				// Insert in the beginning
+				adjacentVertice* newNode = getAdjacentListVertice(endVertice, weight, head[startVertice]);
 			
-                // point head pointer to new node
-				head[start_ver] = newNode;
-       		 }
+                // Point head pointer to new node
+				head[startVertice] = newNode;
+       		}
 		}
 
 		// Destructor
 		~Graph() {
-			for (int i = 0; i < N; i++)
+			for (int i = 0; i < getNumberOfNodes(); i++)
 				delete[] head[i];
 				delete[] head;
 		}
 
 		// Insert new nodes into adjacency list from given graph
-		adjacentVertice* getAdjacentListVertice(int value, int weight, adjNode* head) 	{
-			adjacentVertice* newVertice = new adjVertice;
-			newVertice->val = value;
+		adjacentVertice* getAdjacentListVertice(int value, int weight, adjacentVertice* head) 	{
+			adjacentVertice* newVertice = new adjacentVertice();
+			newVertice->value = value;
 			newVertice->cost = weight;
 			
 			newVertice->next = head;   // Point new node to current head
@@ -79,11 +85,11 @@ class Graph{
 
 };
 
-// print all adjacent vertices of given vertex
+// Print all adjacent vertices of given vertex
 void showAdjacentList(adjacentVertice* ptr, int i){
 
 	while (ptr != nullptr) {
-		cout << "(" << i << ", " << ptr->val
+		cout << "(" << i << ", " << ptr->value
 			<< ", " << ptr->cost << ") ";
 		ptr = ptr->next;
 	}
@@ -113,7 +119,7 @@ int main(){
 	
 	for (int i = 0; i < N; i++)	{
 		// display adjacent vertices of vertex i
-		display_AdjList(diagraph.head[i], i);
+		showAdjacentList(diagraph.head[i], i);
 	}
 
 	return 0;
